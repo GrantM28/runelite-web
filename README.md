@@ -9,12 +9,12 @@ To log in with a **Jagex Account**, the image includes the open-source [Bolt lau
 1. In Unraid, open **Docker → Add Container** and fill in:
    - **Repository:** `ghcr.io/grantm28/runelite-web:latest`
    - **Extra Parameters** (switch to Advanced View): `--security-opt seccomp=unconfined --shm-size=1g`
-   - **Port:** `3001` → `3001`
+   - **Port:** host `38443` → container `3001` (any free host port works)
    - **Path:** `/config` → `/mnt/user/appdata/runelite-web`
    - **Variables:** `PUID=99`, `PGID=100`, `CUSTOM_USER=runelite`, `PASSWORD=<something>`
 
    Or copy [`unraid/runelite-web.xml`](unraid/runelite-web.xml) to `/boot/config/plugins/dockerMan/templates-user/my-runelite-web.xml` on the server. It will then appear under **Add Container → Template**.
-2. Open `https://<unraid-ip>:3001` and accept the self-signed certificate warning.
+2. Open `https://<unraid-ip>:38443` and accept the self-signed certificate warning.
 3. Bolt opens. Click **Log in**, sign in with your Jagex Account (including 2FA), choose your character, pick **RuneLite** as the client, and click **Play**.
 
 Everything is stored in `/config`: your Bolt login, RuneLite settings, plugins, and logs (`/config/logs`). It survives container updates.
@@ -56,6 +56,6 @@ Right-click the desktop to relaunch Bolt or RuneLite, or to open a terminal.
 - Bolt stopped publishing Linux binaries after **0.20.6**, so that version is pinned. To use a different build, rebuild with `--build-arg BOLT_URL=... --build-arg BOLT_SHA256=...`.
 - Rendering is done in software with no GPU. RuneLite's GPU plugin still works through Mesa's llvmpipe, but it uses CPU. Turn it off if the server struggles.
 - A GitHub Actions workflow rebuilds the image weekly to pick up base-image and RuneLite launcher updates. RuneLite also updates its own client each time it launches.
-- Don't expose port 3001 to the internet without a password and, ideally, a reverse proxy or VPN in front of it.
+- Don't expose the web port to the internet without a password and, ideally, a reverse proxy or VPN in front of it.
 
 This project is not affiliated with Jagex, RuneLite, or Bolt.

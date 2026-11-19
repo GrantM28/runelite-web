@@ -15,5 +15,5 @@ services:
     volumes:
       - ./config:/config
     ports:
-      - 3001:3001
+      - 38443:3001
     restart: unless-stopped

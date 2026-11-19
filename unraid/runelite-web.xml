@@ -13,7 +13,7 @@
   <WebUI>https://[IP]:[PORT:3001]/</WebUI>
   <Icon>https://raw.githubusercontent.com/runelite/runelite/master/runelite-client/src/main/resources/net/runelite/client/ui/runelite_128.png</Icon>
   <ExtraParams>--security-opt seccomp=unconfined --shm-size=1g</ExtraParams>
-  <Config Name="WebUI (HTTPS)" Target="3001" Default="3001" Mode="tcp" Description="Browser access (self-signed HTTPS)" Type="Port" Display="always" Required="true" Mask="false">3001</Config>
+  <Config Name="WebUI (HTTPS)" Target="3001" Default="38443" Mode="tcp" Description="Browser access (self-signed HTTPS)" Type="Port" Display="always" Required="true" Mask="false">38443</Config>
   <Config Name="Config" Target="/config" Default="/mnt/user/appdata/runelite-web" Mode="rw" Description="Logins, Bolt and RuneLite settings, plugins" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/runelite-web</Config>
   <Config Name="Web username" Target="CUSTOM_USER" Default="runelite" Description="Username for the web page (basic auth)" Type="Variable" Display="always" Required="false" Mask="false">runelite</Config>
   <Config Name="Web password" Target="PASSWORD" Default="" Description="Password for the web page. Set one; leaving it blank means anyone on your network can play your account." Type="Variable" Display="always" Required="false" Mask="true"></Config>
