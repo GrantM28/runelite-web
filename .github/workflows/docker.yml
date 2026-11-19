@@ -50,3 +50,24 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  smoke-test:
+    needs: build
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Start container
+        run: |
+          docker run -d --name rl --security-opt seccomp=unconfined --shm-size=1g ghcr.io/${GITHUB_REPOSITORY,,}:sha-${GITHUB_SHA::7}
+          sleep 60
+      - name: Check Bolt window and capture screenshot
+        run: |
+          docker exec rl tail -20 /config/logs/bolt.log
+          docker exec -u abc -e DISPLAY=:1 rl bash -c 'xwininfo -root -tree | grep -i "bolt"; import -window root /tmp/shot.png'
+          docker cp rl:/tmp/shot.png shot.png
+          docker exec -u abc -e DISPLAY=:1 rl xwininfo -root -tree | grep -q '"Bolt Launcher"'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smoke-test-screenshot
+          path: shot.png

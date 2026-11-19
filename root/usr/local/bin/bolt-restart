@@ -1,0 +1,9 @@
+#!/bin/bash
+# Menu action: (re)start Bolt. Bolt is single-instance, so stop any running copy first.
+if pgrep -f /opt/bolt/ >/dev/null; then
+  pkill -f /opt/bolt/
+  sleep 2
+fi
+# With RESTART_APP=true the watchdog relaunches the autostart; otherwise start it here.
+sleep 2
+pgrep -f /opt/bolt/ >/dev/null || exec /usr/local/bin/bolt-start

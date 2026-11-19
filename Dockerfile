@@ -62,7 +62,7 @@ RUN set -eux; \
 
 COPY root/ /
 
-RUN chmod +x /usr/local/bin/runelite-start /usr/local/bin/bolt-start /usr/local/bin/runelite-direct
+RUN chmod +x /usr/local/bin/runelite-start /usr/local/bin/bolt-start /usr/local/bin/bolt-restart /usr/local/bin/runelite-direct
 
 # Selkies web UI (HTTPS)
 EXPOSE 3001

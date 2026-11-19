@@ -9,7 +9,12 @@ export JAVA_HOME="${JAVA_HOME:-/opt/java}"
 export PATH="$JAVA_HOME/bin:$PATH"
 log="$HOME/logs/bolt.log"
 mkdir -p "$HOME/.local/share" "$HOME/.config" "$HOME/logs"
-echo "[$(date)] starting Bolt (user=$(id -un) HOME=$HOME DISPLAY=$DISPLAY args=${BOLT_ARGS})" >>"$log"
-# BOLT_ARGS lets you pass extra flags, e.g. --no-sandbox if the window stays blank.
-bolt ${BOLT_ARGS} 2>&1 | grep --line-buffered -v "dbus/" >>"$log"
+# Containers usually have no usable GPU: force Chromium's software rendering
+# unless BOLT_GPU=true. BOLT_ARGS adds extra flags.
+args=()
+if [ "${BOLT_GPU,,}" != "true" ]; then
+  args+=(--disable-gpu --disable-gpu-compositing --disable-gpu-rasterization)
+fi
+echo "[$(date)] starting Bolt (user=$(id -un) HOME=$HOME DISPLAY=$DISPLAY args=${args[*]} ${BOLT_ARGS})" >>"$log"
+bolt "${args[@]}" ${BOLT_ARGS} 2>&1 | grep --line-buffered -v "dbus/" >>"$log"
 echo "[$(date)] Bolt exited with code ${PIPESTATUS[0]}" >>"$log"
