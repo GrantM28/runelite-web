@@ -14,7 +14,8 @@ ARG JAVA_VERSION=17
 ENV TITLE="RuneLite" \
     JAVA_HOME=/opt/java \
     PATH="/opt/java/bin:${PATH}" \
-    LAUNCH_MODE=bolt \n    RESTART_APP=true
+    LAUNCH_MODE=bolt \
+    RESTART_APP=true
 
 RUN set -eux; \
     apt-get update; \
@@ -28,7 +29,7 @@ RUN set -eux; \
       # OpenGL (software rendering for RuneLite GPU plugin) + fonts
       libgl1 libgl1-mesa-dri libegl1 mesa-utils fonts-dejavu-core fontconfig \
       # Small terminal for troubleshooting from the right-click menu
-      xterm; \
+      xterm x11-utils xdotool imagemagick; \
     \
     # Java runtime for RuneLite (Eclipse Temurin)
     arch="$(dpkg --print-architecture)"; \
