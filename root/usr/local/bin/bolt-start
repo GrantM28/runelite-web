@@ -9,6 +9,11 @@ export JAVA_HOME="${JAVA_HOME:-/opt/java}"
 export PATH="$JAVA_HOME/bin:$PATH"
 log="$HOME/logs/bolt.log"
 mkdir -p "$HOME/.local/share" "$HOME/.config" "$HOME/logs"
+# Chromium's profile lock records the container hostname, which changes every time
+# the container is recreated (e.g. image updates). Clear a stale lock if Bolt isn't running.
+if ! pgrep -f /opt/bolt/ >/dev/null; then
+  rm -f "$HOME"/.local/share/bolt-launcher/CefCache/Singleton{Lock,Socket,Cookie}
+fi
 # Containers usually have no usable GPU: force Chromium's software rendering
 # unless BOLT_GPU=true. BOLT_ARGS adds extra flags.
 args=()

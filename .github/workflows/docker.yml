@@ -56,16 +56,23 @@ jobs:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
-      - name: Start container
+      - name: First start, then recreate with the same /config (new hostname)
         run: |
-          docker run -d --name rl --security-opt seccomp=unconfined --shm-size=1g ghcr.io/${GITHUB_REPOSITORY,,}:sha-${GITHUB_SHA::7}
+          IMG=ghcr.io/${GITHUB_REPOSITORY,,}:sha-${GITHUB_SHA::7}
+          mkdir -p cfg
+          docker run -d --name rl1 -v $PWD/cfg:/config --security-opt seccomp=unconfined --shm-size=1g $IMG
           sleep 60
+          docker rm -f rl1
+          docker run -d --name rl -v $PWD/cfg:/config --security-opt seccomp=unconfined --shm-size=1g $IMG
+          sleep 60
+
       - name: Check Bolt window and capture screenshot
         run: |
           docker exec rl tail -20 /config/logs/bolt.log
           docker exec -u abc -e DISPLAY=:1 rl bash -c 'xwininfo -root -tree | grep -i "bolt"; import -window root /tmp/shot.png'
           docker cp rl:/tmp/shot.png shot.png
           docker exec -u abc -e DISPLAY=:1 rl xwininfo -root -tree | grep -q '"Bolt Launcher"'
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:
