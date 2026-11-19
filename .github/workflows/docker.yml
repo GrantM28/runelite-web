@@ -92,7 +92,7 @@ jobs:
           for i in $(seq 1 20); do s=$(docker inspect -f '{{.State.Health.Status}}' rl); [ "$s" = healthy ] && break; sleep 5; done
           echo "health: $s"; test "$s" = healthy
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: smoke-test-screenshot
