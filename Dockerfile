@@ -41,7 +41,7 @@ RUN set -eux; \
       # OpenGL (software rendering for RuneLite's GPU plugin) + fonts
       libgl1 libgl1-mesa-dri libegl1 mesa-utils fonts-dejavu-core fontconfig \
       # Troubleshooting tools (right-click menu) and screenshot/smoke-test helpers
-      xterm x11-utils xdotool imagemagick; \
+      xterm x11-utils xdotool imagemagick librsvg2-bin; \
     \
     # Java runtime for RuneLite (Eclipse Temurin)
     arch="$(dpkg --print-architecture)"; \
@@ -84,10 +84,9 @@ COPY assets/icon.svg /usr/share/runelite-web/icon.svg
 RUN set -eux; \
     chmod +x /usr/local/bin/* /etc/s6-overlay/s6-rc.d/init-runelite-config/run; \
     # Browser tab / PWA icon
-    convert -background none -density 384 /usr/share/runelite-web/icon.svg -resize 256x256 /tmp/icon.png \
-      && mkdir -p /usr/share/selkies/www && cp /tmp/icon.png /usr/share/selkies/www/icon.png \
-      && cp /tmp/icon.png /usr/share/runelite-web/icon.png; \
-    rm -f /tmp/icon.png
+    rsvg-convert -w 256 -h 256 /usr/share/runelite-web/icon.svg -o /usr/share/runelite-web/icon.png; \
+    mkdir -p /usr/share/selkies/www; \
+    cp /usr/share/runelite-web/icon.png /usr/share/selkies/www/icon.png
 
 # Healthy once the web server answers (any HTTP status, including 401 when a password is set)
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
