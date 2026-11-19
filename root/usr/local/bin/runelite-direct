@@ -4,6 +4,8 @@
 # to your Jagex Account automatically.
 export HOME="${HOME:-/config}"
 [ "$HOME" = "/" ] && export HOME=/config
+# Selkies injects input/udev shims via LD_PRELOAD; they crash Bolt (CEF) with SIGILL.
+unset LD_PRELOAD
 export DISPLAY="${DISPLAY:-:1}"
 export JAVA_HOME="${JAVA_HOME:-/opt/java}"
 export PATH="$JAVA_HOME/bin:$PATH"

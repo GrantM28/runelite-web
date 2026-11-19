@@ -6,17 +6,18 @@ jobs:
     steps:
       - name: Start container and probe
         run: |
-          docker run -d --name rl --security-opt seccomp=unconfined --shm-size=1g -e RESTART_APP=false ghcr.io/grantm28/runelite-web:latest
-          sleep 40
-          docker exec -u abc rl bash -c 'p=$(pgrep -x openbox); echo "== openbox env =="; tr "\0" "\n" < /proc/$p/environ | sort > /tmp/env.txt; cat /tmp/env.txt'
-          for v in NONE LD_PRELOAD SDL_JOYSTICK_DEVICE ALL; do
-            echo "==== test unset=$v ===="
-            docker exec -u abc rl bash -c '
-              mapfile -t E < /tmp/env.txt
-              case '"$v"' in
-                NONE) env -i "${E[@]}" timeout 15 /opt/bolt/bolt-launcher/bolt 2>&1 | grep -v dbus/ | tail -15 ;;
-                ALL) env -i HOME=/config DISPLAY=:1 PATH=/usr/bin:/bin timeout 15 /opt/bolt/bolt-launcher/bolt 2>&1 | grep -v dbus/ | tail -5 ;;
-                *) env -i "${E[@]}" -u '"$v"' timeout 15 /opt/bolt/bolt-launcher/bolt 2>&1 | grep -v dbus/ | tail -5 ;;
-              esac
-              echo "exit=${PIPESTATUS[0]}"'
+          docker run -d --name rl --security-opt seccomp=unconfined --shm-size=1g ghcr.io/grantm28/runelite-web:latest
+          sleep 50
+          docker exec -u abc rl bash -c 'p=$(pgrep -x openbox); tr "\0" "\n" < /proc/$p/environ > /tmp/env.txt'
+          for drop in "^LD_PRELOAD=" "^NOTHING"; do
+            echo "==== raw bolt, env without $drop ===="
+            docker exec -u abc rl bash -c 'mapfile -t E < <(grep -v "'"$drop"'" /tmp/env.txt); env -i "${E[@]}" timeout 12 /opt/bolt/bolt-launcher/bolt >/dev/null 2>&1; echo "exit=$?"'
           done
+          echo "==== real autostart (new image) ===="
+          docker exec rl bash -c 'ps aux | grep -c "[b]olt-launcher/bolt"; tail -6 /config/logs/bolt.log'
+          docker exec -u abc -e DISPLAY=:1 rl bash -c 'xwininfo -root -tree | grep -i bolt; import -window root /tmp/shot.png'
+          docker cp rl:/tmp/shot.png shot.png
+      - uses: actions/upload-artifact@v4
+        with:
+          name: screenshot
+          path: shot.png

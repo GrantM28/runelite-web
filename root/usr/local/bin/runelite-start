@@ -9,5 +9,6 @@ if [ "$mode" = "bolt" ] && ! command -v bolt >/dev/null 2>&1; then
 fi
 case "$mode" in
   runelite) exec /usr/local/bin/runelite-direct ;;
+  none)     exit 0 ;;
   *)        exec /usr/local/bin/bolt-start ;;
 esac
