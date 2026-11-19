@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openbox_menu xmlns="http://openbox.org/3.4/menu">
-  <menu id="root-menu" label="MENU">
-    <item label="Bolt Launcher (restart)" icon="">
+  <menu id="root-menu" label="RuneLite">
+    <item label="Bolt Launcher (restart)">
       <action name="Execute"><command>/usr/local/bin/bolt-restart</command></action>
     </item>
-    <item label="RuneLite (direct)" icon="">
+    <item label="RuneLite (without Bolt)">
       <action name="Execute"><command>/usr/local/bin/runelite-direct</command></action>
     </item>
-    <item label="Terminal" icon="">
-      <action name="Execute"><command>/usr/bin/xterm</command></action>
+    <separator />
+    <item label="Terminal">
+      <action name="Execute"><command>/usr/bin/xterm -fa Monospace -fs 11</command></action>
+    </item>
+    <item label="View logs">
+      <action name="Execute"><command>/usr/bin/xterm -fa Monospace -fs 10 -T Logs -e "tail -n 200 -F /config/logs/bolt.log /config/logs/runelite.log"</command></action>
     </item>
   </menu>
 </openbox_menu>

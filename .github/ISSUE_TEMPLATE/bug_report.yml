@@ -1,0 +1,40 @@
+name: Bug report
+description: Something isn't working
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Check [Troubleshooting](https://github.com/GrantM28/runelite-web/blob/main/docs/troubleshooting.md) first. **Never paste passwords or anything from `/config/.local/share/bolt-launcher`.**
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What you expected, and what you saw instead.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Image version
+      description: The first lines of the container log show the versions.
+    validations:
+      required: true
+  - type: dropdown
+    id: host
+    attributes:
+      label: Host
+      options: [Unraid, Docker Compose, Docker CLI, Other]
+    validations:
+      required: true
+  - type: input
+    id: cpu
+    attributes:
+      label: CPU / GPU
+      placeholder: e.g. Dell T630, 2x Xeon E5-2680 v4, no GPU
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Output of `tail -50 <appdata>/logs/bolt.log` and the container log.
+      render: shell

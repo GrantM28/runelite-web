@@ -1,0 +1,28 @@
+#!/usr/bin/with-contenv bash
+# One-time setup on every container start (runs as root, before the desktop).
+
+echo "───────────────────────────────────────"
+echo " runelite-web"
+sed 's/^/   /' /etc/runelite-web/versions 2>/dev/null
+echo "───────────────────────────────────────"
+
+if [ -z "${PASSWORD}" ]; then
+  echo "**** WARNING: PASSWORD is not set. Anyone who can reach this container's web port ****"
+  echo "**** can control your logged-in RuneScape account. Set CUSTOM_USER and PASSWORD.  ****"
+fi
+
+home=/config
+mkdir -p "$home/logs" "$home/.config/openbox"
+
+# Keep the right-click menu in sync with the image (first-run copies otherwise go stale).
+cp /defaults/menu.xml "$home/.config/openbox/menu.xml"
+
+# Chromium's profile lock stores the old container's hostname; nothing is running yet, so drop it.
+rm -f "$home"/.local/share/bolt-launcher/CefCache/Singleton{Lock,Socket,Cookie}
+
+# Rotate logs so they don't grow forever.
+for f in "$home"/logs/*.log; do
+  [ -f "$f" ] && [ "$(stat -c %s "$f")" -gt 5242880 ] && mv -f "$f" "$f.1"
+done
+
+chown -R abc:abc "$home/logs" "$home/.config/openbox"

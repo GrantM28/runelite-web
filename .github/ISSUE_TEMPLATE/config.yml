@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: RuneLite client or plugin problems
+    url: https://github.com/runelite/runelite/issues
+    about: Problems inside the RuneLite client itself belong upstream.
+  - name: Bolt launcher problems
+    url: https://codeberg.org/Adamcake/Bolt/issues
+    about: Login or launcher bugs that also happen outside this container.

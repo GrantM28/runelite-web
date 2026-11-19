@@ -8,19 +8,28 @@
   <Privileged>false</Privileged>
   <Support>https://github.com/GrantM28/runelite-web/issues</Support>
   <Project>https://github.com/GrantM28/runelite-web</Project>
-  <Overview>RuneLite (Old School RuneScape) in your web browser. Log in with a Jagex Account through the bundled Bolt launcher.</Overview>
+  <ReadMe>https://github.com/GrantM28/runelite-web#readme</ReadMe>
+  <TemplateURL>https://raw.githubusercontent.com/GrantM28/runelite-web/main/unraid/runelite-web.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/GrantM28/runelite-web/main/assets/icon.png</Icon>
+  <Overview>Play Old School RuneScape with RuneLite from any web browser. The game runs on your server and is streamed to your browser, with nothing to install on the device you play from. Log in with your Jagex Account through the bundled open-source Bolt launcher.&#xD;
+&#xD;
+Set a web password, and don't expose the port to the internet without a VPN or an authenticating proxy: whoever opens the page controls your account.</Overview>
   <Category>GameServers: Tools:</Category>
   <WebUI>https://[IP]:[PORT:3001]/</WebUI>
-  <Icon>https://raw.githubusercontent.com/runelite/runelite/master/runelite-client/src/main/resources/net/runelite/client/ui/runelite_128.png</Icon>
   <ExtraParams>--security-opt seccomp=unconfined --shm-size=1g</ExtraParams>
-  <Config Name="WebUI (HTTPS)" Target="3001" Default="38443" Mode="tcp" Description="Browser access (self-signed HTTPS)" Type="Port" Display="always" Required="true" Mask="false">38443</Config>
-  <Config Name="Config" Target="/config" Default="/mnt/user/appdata/runelite-web" Mode="rw" Description="Logins, Bolt and RuneLite settings, plugins" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/runelite-web</Config>
-  <Config Name="Web username" Target="CUSTOM_USER" Default="runelite" Description="Username for the web page (basic auth)" Type="Variable" Display="always" Required="false" Mask="false">runelite</Config>
-  <Config Name="Web password" Target="PASSWORD" Default="" Description="Password for the web page. Set one; leaving it blank means anyone on your network can play your account." Type="Variable" Display="always" Required="false" Mask="true"></Config>
-  <Config Name="Launch mode" Target="LAUNCH_MODE" Default="bolt|runelite" Description="bolt = Jagex Account login via Bolt; runelite = start RuneLite directly" Type="Variable" Display="always" Required="false" Mask="false">bolt</Config>
+  <Requires>Bolt's embedded browser needs the seccomp=unconfined and shm-size settings in Extra Parameters (already filled in). x86-64 CPUs only.</Requires>
+  <Changes>See https://github.com/GrantM28/runelite-web/blob/main/CHANGELOG.md</Changes>
+  <Config Name="WebUI (HTTPS)" Target="3001" Default="38443" Mode="tcp" Description="Port you open in your browser (self-signed HTTPS). Change it if 38443 is taken." Type="Port" Display="always" Required="true" Mask="false">38443</Config>
+  <Config Name="Appdata" Target="/config" Default="/mnt/user/appdata/runelite-web" Mode="rw" Description="Bolt login, RuneLite settings and plugins, and logs" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/runelite-web</Config>
+  <Config Name="Web username" Target="CUSTOM_USER" Default="runelite" Description="Username for the web page" Type="Variable" Display="always" Required="true" Mask="false">runelite</Config>
+  <Config Name="Web password" Target="PASSWORD" Default="" Description="Password for the web page. Required: without it, anyone who can reach the page can play your account." Type="Variable" Display="always" Required="true" Mask="true"></Config>
+  <Config Name="Launch mode" Target="LAUNCH_MODE" Default="bolt|runelite" Description="bolt = Jagex Account login via Bolt. runelite = start RuneLite directly (legacy accounts or credentials.properties)." Type="Variable" Display="always" Required="false" Mask="false">bolt</Config>
+  <Config Name="Stream frame rate" Target="SELKIES_FRAMERATE" Default="30,8-60" Description="Initial fps, then the allowed range. Lower = less CPU. Use 60,8-60 on fast CPUs." Type="Variable" Display="advanced" Required="false" Mask="false">30,8-60</Config>
+  <Config Name="WebUI (HTTP, reverse proxy only)" Target="3000" Default="" Mode="tcp" Description="Optional plain-HTTP port for a reverse proxy or Cloudflare Tunnel that handles TLS. Leave empty if unused." Type="Port" Display="advanced" Required="false" Mask="false"></Config>
   <Config Name="PUID" Target="PUID" Default="99" Type="Variable" Display="advanced" Required="false" Mask="false">99</Config>
   <Config Name="PGID" Target="PGID" Default="100" Type="Variable" Display="advanced" Required="false" Mask="false">100</Config>
-  <Config Name="TZ" Target="TZ" Default="Etc/UTC" Type="Variable" Display="advanced" Required="false" Mask="false">Etc/UTC</Config>
-  <Config Name="Bolt extra args" Target="BOLT_ARGS" Default="" Description="e.g. --no-sandbox if the Bolt window stays blank" Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+  <Config Name="TZ" Target="TZ" Default="Etc/UTC" Description="Time zone, e.g. America/Chicago" Type="Variable" Display="advanced" Required="false" Mask="false">Etc/UTC</Config>
+  <Config Name="Use GPU for Bolt" Target="BOLT_GPU" Default="false|true" Description="Only set true if you pass a working GPU (/dev/dri) into the container." Type="Variable" Display="advanced" Required="false" Mask="false">false</Config>
+  <Config Name="Bolt extra args" Target="BOLT_ARGS" Default="" Description="Extra command-line flags for Bolt" Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
   <Config Name="RuneLite Java options" Target="RUNELITE_JAVA_OPTS" Default="" Description="Extra JVM flags for direct RuneLite launches" Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
 </Container>

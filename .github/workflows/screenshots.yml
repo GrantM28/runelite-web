@@ -1,0 +1,46 @@
+name: Refresh screenshots
+
+# Run manually after UI-visible changes. Commits fresh images to docs/images and assets/icon.png.
+on: workflow_dispatch
+
+permissions:
+  contents: write
+
+jobs:
+  screenshots:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Start container
+        run: |
+          docker run -d --name rl --security-opt seccomp=unconfined --shm-size=1g -p 3001:3001 \
+            ghcr.io/${GITHUB_REPOSITORY,,}:latest
+          sleep 45
+
+      - name: Install Playwright
+        run: |
+          npm i -g playwright@1.49.1
+          npx -y playwright@1.49.1 install --with-deps chromium
+
+      - name: Capture
+        run: |
+          mkdir -p shots
+          PW=$(npm root -g)/playwright node .github/scripts/screenshots.js shots
+          docker exec rl tail -20 /config/logs/runelite.log || true
+          cp shots/bolt.png shots/runelite.png docs/images/
+          docker cp rl:/usr/share/runelite-web/icon.png assets/icon.png
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: screenshots
+          path: shots/
+
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/images assets/icon.png
+          git diff --cached --quiet || git commit -m "Refresh screenshots"
+          git push

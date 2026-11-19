@@ -2,13 +2,6 @@
 # Entry point started by the desktop session (see /defaults/autostart).
 # LAUNCH_MODE=bolt     -> Bolt launcher (Jagex Account login), default
 # LAUNCH_MODE=runelite -> RuneLite directly (legacy accounts or credentials.properties)
-
-# Keep the right-click menu in /config in sync with the image.
-menu="$HOME/.config/openbox/menu.xml"
-if [ -f /defaults/menu.xml ] && ! cmp -s /defaults/menu.xml "$menu"; then
-  mkdir -p "$(dirname "$menu")" && cp /defaults/menu.xml "$menu" && openbox --reconfigure 2>/dev/null
-fi
-
 mode="${LAUNCH_MODE:-bolt}"
 if [ "$mode" = "bolt" ] && ! command -v bolt >/dev/null 2>&1; then
   echo "Bolt not available on this architecture, falling back to RuneLite" >&2
@@ -16,6 +9,6 @@ if [ "$mode" = "bolt" ] && ! command -v bolt >/dev/null 2>&1; then
 fi
 case "$mode" in
   runelite) exec /usr/local/bin/runelite-direct ;;
-  none)     exit 0 ;;
+  none)     exec sleep infinity ;;
   *)        exec /usr/local/bin/bolt-start ;;
 esac
