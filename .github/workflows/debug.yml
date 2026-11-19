@@ -1,0 +1,23 @@
+name: Debug image
+on: workflow_dispatch
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          docker run --rm --entrypoint bash ghcr.io/grantm28/runelite-web:latest -c '
+            set -x
+            b=$(readlink -f /usr/local/bin/bolt); echo "bolt=$b"; ls -la $(dirname $b)
+            echo "== missing libs (bolt) =="; ldd "$b" | grep "not found"
+            for f in $(dirname $b)/*.so*; do ldd "$f" 2>/dev/null | grep "not found" | sed "s#^#$f: #"; done
+            echo "== defaults =="; ls -la /defaults; cat /defaults/autostart
+            grep -rn autostart /etc/s6-overlay /defaults /usr/bin/*startwm* /startwm* 2>/dev/null | head -20
+            ls -la /usr/local/bin
+          '
+      - name: Start container and capture logs
+        run: |
+          docker run -d --name rl --security-opt seccomp=unconfined --shm-size=1g ghcr.io/grantm28/runelite-web:latest
+          sleep 60
+          docker logs rl 2>&1 | tail -80
+          echo "== processes =="; docker exec rl ps aux
+          echo "== bolt log =="; docker exec rl bash -c 'cat /config/logs/*.log 2>/dev/null | tail -80'
