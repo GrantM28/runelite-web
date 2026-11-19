@@ -25,7 +25,7 @@ jobs:
 
       - name: Capture
         run: |
-          mkdir -p shots
+          mkdir -p shots docs/images
           PW=$(npm root -g)/playwright node .github/scripts/screenshots.js shots
           docker exec rl tail -20 /config/logs/runelite.log || true
           cp shots/bolt.png shots/runelite.png docs/images/

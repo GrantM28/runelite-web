@@ -70,10 +70,10 @@ RUN set -eux; \
     \
     # Record component versions (shown in the container log at start)
     mkdir -p /etc/runelite-web; \
-    { echo "runelite-web     ${VERSION}"; \
-      echo "Bolt launcher    ${BOLT_VERSION}"; \
+    { echo "runelite-web      ${VERSION}"; \
+      echo "Bolt launcher     ${BOLT_VERSION}"; \
       echo "RuneLite launcher ${rl_ver}"; \
-      echo "Java             $(/opt/java/bin/java -version 2>&1 | head -n1)"; } > /etc/runelite-web/versions; \
+      echo "Java              $(/opt/java/bin/java -version 2>&1 | head -n1)"; } > /etc/runelite-web/versions; \
     \
     apt-get clean; \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

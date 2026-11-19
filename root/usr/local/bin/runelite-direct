@@ -4,13 +4,18 @@
 # to your Jagex Account automatically.
 export HOME="${HOME:-/config}"
 [ "$HOME" = "/" ] && export HOME=/config
-# Selkies injects input/udev shims via LD_PRELOAD; they crash Bolt (CEF) with SIGILL.
+# Selkies injects input/udev shims via LD_PRELOAD; keep them out of the game JVM.
 unset LD_PRELOAD
 export DISPLAY="${DISPLAY:-:1}"
 export JAVA_HOME="${JAVA_HOME:-/opt/java}"
 export PATH="$JAVA_HOME/bin:$PATH"
 log="$HOME/logs/runelite.log"
 mkdir -p "$HOME/logs"
-echo "[$(date)] starting RuneLite" >>"$log"
+echo "[$(date)] starting RuneLite launcher" >>"$log"
 java ${RUNELITE_JAVA_OPTS} -jar /opt/runelite/RuneLite.jar ${RUNELITE_ARGS} >>"$log" 2>&1
-echo "[$(date)] RuneLite exited with code $?" >>"$log"
+echo "[$(date)] RuneLite launcher exited with code $?" >>"$log"
+# The launcher hands off to a separate client JVM and exits. Stay alive while the
+# client runs so the auto-restart watchdog doesn't start a second copy.
+sleep 5
+while pgrep -u "$(id -u)" -f net.runelite.client.RuneLite >/dev/null; do sleep 5; done
+echo "[$(date)] RuneLite client closed" >>"$log"
