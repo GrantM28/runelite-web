@@ -7,7 +7,13 @@ jobs:
       - name: Start container and probe
         run: |
           docker run -d --name rl --security-opt seccomp=unconfined --shm-size=1g ghcr.io/grantm28/runelite-web:latest
-          sleep 45
-          docker exec rl bash -c 'ps aux | grep -i "bolt\|runelite\|java" | grep -v grep; echo "== bolt.log =="; cat /config/logs/bolt.log; echo "== openbox env =="; p=$(pgrep -x openbox); tr "\0" "\n" < /proc/$p/environ | sort'
-          echo "==== replay autostart with openbox env ===="
-          docker exec rl bash -c 'p=$(pgrep -x openbox); mapfile -d "" E < /proc/$p/environ; s6-setuidgid abc env -i "${E[@]}" bash -xc "timeout 20 sh /config/.config/openbox/autostart; echo autostart_exit=\$?"; echo "== bolt.log after =="; tail -30 /config/logs/bolt.log'
+          sleep 75
+          docker logs rl 2>&1 | grep -i "watchdog\|error" | tail -20
+          docker exec rl bash -c 'ps aux | grep -i "bolt\|runelite\|java" | grep -v grep; echo "== bolt.log =="; tail -40 /config/logs/bolt.log'
+          echo "== windows =="
+          docker exec -u abc -e DISPLAY=:1 rl bash -c 'xwininfo -root -tree | grep -v "has no name" | head -30; import -window root /tmp/shot.png'
+          docker cp rl:/tmp/shot.png shot.png
+      - uses: actions/upload-artifact@v4
+        with:
+          name: screenshot
+          path: shot.png

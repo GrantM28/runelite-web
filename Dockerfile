@@ -14,7 +14,7 @@ ARG JAVA_VERSION=17
 ENV TITLE="RuneLite" \
     JAVA_HOME=/opt/java \
     PATH="/opt/java/bin:${PATH}" \
-    LAUNCH_MODE=bolt
+    LAUNCH_MODE=bolt \n    RESTART_APP=true
 
 RUN set -eux; \
     apt-get update; \

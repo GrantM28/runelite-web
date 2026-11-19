@@ -1,7 +1,13 @@
 #!/bin/bash
 # Launch Bolt. Data lives under $HOME (/config) so logins and settings persist.
+export HOME="${HOME:-/config}"
+[ "$HOME" = "/" ] && export HOME=/config
+export DISPLAY="${DISPLAY:-:1}"
 export JAVA_HOME="${JAVA_HOME:-/opt/java}"
 export PATH="$JAVA_HOME/bin:$PATH"
+log="$HOME/logs/bolt.log"
 mkdir -p "$HOME/.local/share" "$HOME/.config" "$HOME/logs"
+echo "[$(date)] starting Bolt (user=$(id -un) HOME=$HOME DISPLAY=$DISPLAY args=${BOLT_ARGS})" >>"$log"
 # BOLT_ARGS lets you pass extra flags, e.g. --no-sandbox if the window stays blank.
-exec bolt ${BOLT_ARGS} >>"$HOME/logs/bolt.log" 2>&1
+bolt ${BOLT_ARGS} 2>&1 | grep --line-buffered -v "dbus/" >>"$log"
+echo "[$(date)] Bolt exited with code ${PIPESTATUS[0]}" >>"$log"
