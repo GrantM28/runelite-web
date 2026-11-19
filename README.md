@@ -50,6 +50,16 @@ Right-click the desktop to relaunch Bolt or RuneLite, or to open a terminal.
   Treat this file like a password.
 - **Legacy (non-Jagex) accounts:** set `LAUNCH_MODE=runelite` and log in on the game's login screen.
 
+## Troubleshooting
+
+- **Logs:** Bolt writes to `/config/logs/bolt.log` and RuneLite to `/config/logs/runelite.log`. Both record start times and exit codes.
+- **Black screen or no Bolt window:** right-click the desktop and choose **Bolt Launcher (restart)**, then check `bolt.log`.
+- **Built-in fixes:** the launcher already handles the issues found so far:
+  - It removes Selkies' `LD_PRELOAD` input shims, which crash Bolt.
+  - It forces software rendering. Set `BOLT_GPU=true` only if you pass a working GPU through to the container.
+  - It clears Chromium's stale profile lock, which would otherwise stop Bolt from starting after the container is recreated.
+- **Behind Cloudflare Tunnel:** set the service type to `HTTPS` (pointing at the container's port) and turn on **No TLS Verify**, because the container uses a self-signed certificate.
+
 ## Notes and limitations
 
 - The image is **amd64 only**. Bolt publishes Linux binaries only for x86-64.
