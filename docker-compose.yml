@@ -1,19 +1,26 @@
 services:
   runelite:
     image: ghcr.io/grantm28/runelite-web:latest
-    container_name: runelite
+    container_name: runelite-web
     security_opt:
-      - seccomp:unconfined   # Bolt's embedded browser (CEF) needs this
+      - seccomp:unconfined   # needed by Bolt's embedded browser (CEF)
     shm_size: "1gb"
     environment:
-      - PUID=99
-      - PGID=100
+      - PUID=1000
+      - PGID=1000
       - TZ=Etc/UTC
       - CUSTOM_USER=runelite
-      - PASSWORD=change-me
-      - LAUNCH_MODE=bolt
+      - PASSWORD=change-me     # always set this
+      - LAUNCH_MODE=bolt       # or "runelite"
+      # - SELKIES_FRAMERATE=30,8-60
+      # - SELKIES_MANUAL_WIDTH=1600
+      # - SELKIES_MANUAL_HEIGHT=900
     volumes:
       - ./config:/config
     ports:
-      - 38443:3001
+      - 38443:3001   # HTTPS (self-signed)
+      # - 38080:3000 # plain HTTP, only for a TLS-terminating reverse proxy
+    # Optional GPU passthrough (Intel/AMD):
+    # devices:
+    #   - /dev/dri:/dev/dri
     restart: unless-stopped
