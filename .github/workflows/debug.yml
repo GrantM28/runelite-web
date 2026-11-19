@@ -4,20 +4,12 @@ jobs:
   inspect:
     runs-on: ubuntu-latest
     steps:
-      - run: |
-          docker run --rm --entrypoint bash ghcr.io/grantm28/runelite-web:latest -c '
-            set -x
-            b=$(readlink -f /usr/local/bin/bolt); echo "bolt=$b"; ls -la $(dirname $b)
-            echo "== missing libs (bolt) =="; ldd "$b" | grep "not found"
-            for f in $(dirname $b)/*.so*; do ldd "$f" 2>/dev/null | grep "not found" | sed "s#^#$f: #"; done
-            echo "== defaults =="; ls -la /defaults; cat /defaults/autostart
-            grep -rn autostart /etc/s6-overlay /defaults /usr/bin/*startwm* /startwm* 2>/dev/null | head -20
-            ls -la /usr/local/bin
-          '
-      - name: Start container and capture logs
+      - name: Start container and probe
         run: |
           docker run -d --name rl --security-opt seccomp=unconfined --shm-size=1g ghcr.io/grantm28/runelite-web:latest
-          sleep 60
-          docker logs rl 2>&1 | tail -80
-          echo "== processes =="; docker exec rl ps aux
-          echo "== bolt log =="; docker exec rl bash -c 'cat /config/logs/*.log 2>/dev/null | tail -80'
+          sleep 45
+          docker exec rl bash -c 'sed -n 1,40p /etc/s6-overlay/s6-rc.d/init-selkies-config/run; echo ====; cat /etc/s6-overlay/s6-rc.d/svc-watchdog/run; echo ====; cat /defaults/startwm.sh; echo ====; ls -la /config/.config/openbox; cat /config/.config/openbox/autostart; echo ====; cat /usr/lib/x86_64-linux-gnu/openbox-autostart | tail -20; ls -la /config /config/logs'
+          echo "==== manual bolt run ===="
+          docker exec -u abc -e HOME=/config -e DISPLAY=:1 rl bash -c 'timeout 25 /opt/bolt/bolt-launcher/bolt 2>&1 | tail -60; echo "exit=$?"'
+          echo "==== manual bolt run --no-sandbox ===="
+          docker exec -u abc -e HOME=/config -e DISPLAY=:1 rl bash -c 'timeout 25 /opt/bolt/bolt-launcher/bolt --no-sandbox 2>&1 | tail -40; echo "exit=$?"'
