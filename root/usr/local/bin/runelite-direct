@@ -1,0 +1,8 @@
+#!/bin/bash
+# Start RuneLite without Bolt. If ~/.runelite/credentials.properties exists
+# (written by RuneLite's --insecure-write-credentials option), RuneLite logs in
+# to your Jagex Account automatically.
+export JAVA_HOME="${JAVA_HOME:-/opt/java}"
+export PATH="$JAVA_HOME/bin:$PATH"
+mkdir -p "$HOME/logs"
+exec java ${RUNELITE_JAVA_OPTS} -jar /opt/runelite/RuneLite.jar ${RUNELITE_ARGS} >>"$HOME/logs/runelite.log" 2>&1

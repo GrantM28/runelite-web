@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openbox_menu xmlns="http://openbox.org/3.4/menu">
+  <menu id="root-menu" label="MENU">
+    <item label="Bolt Launcher (Jagex Account)" icon="">
+      <action name="Execute"><command>/usr/local/bin/bolt-start</command></action>
+    </item>
+    <item label="RuneLite (direct)" icon="">
+      <action name="Execute"><command>/usr/local/bin/runelite-direct</command></action>
+    </item>
+    <item label="Terminal" icon="">
+      <action name="Execute"><command>/usr/bin/xterm</command></action>
+    </item>
+  </menu>
+</openbox_menu>

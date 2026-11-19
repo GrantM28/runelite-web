@@ -1,0 +1,19 @@
+services:
+  runelite:
+    image: ghcr.io/grantm28/runelite-web:latest
+    container_name: runelite
+    security_opt:
+      - seccomp:unconfined   # Bolt's embedded browser (CEF) needs this
+    shm_size: "1gb"
+    environment:
+      - PUID=99
+      - PGID=100
+      - TZ=Etc/UTC
+      - CUSTOM_USER=runelite
+      - PASSWORD=change-me
+      - LAUNCH_MODE=bolt
+    volumes:
+      - ./config:/config
+    ports:
+      - 3001:3001
+    restart: unless-stopped

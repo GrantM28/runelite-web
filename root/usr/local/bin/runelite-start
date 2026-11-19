@@ -1,0 +1,13 @@
+#!/bin/bash
+# Entry point started by the desktop session (see /defaults/autostart).
+# LAUNCH_MODE=bolt     -> Bolt launcher (Jagex Account login), default
+# LAUNCH_MODE=runelite -> RuneLite directly (legacy accounts or credentials.properties)
+mode="${LAUNCH_MODE:-bolt}"
+if [ "$mode" = "bolt" ] && ! command -v bolt >/dev/null 2>&1; then
+  echo "Bolt not available on this architecture, falling back to RuneLite" >&2
+  mode=runelite
+fi
+case "$mode" in
+  runelite) exec /usr/local/bin/runelite-direct ;;
+  *)        exec /usr/local/bin/bolt-start ;;
+esac

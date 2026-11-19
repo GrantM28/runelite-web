@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>runelite-web</Name>
+  <Repository>ghcr.io/grantm28/runelite-web:latest</Repository>
+  <Registry>https://github.com/GrantM28/runelite-web/pkgs/container/runelite-web</Registry>
+  <Network>bridge</Network>
+  <Shell>bash</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/GrantM28/runelite-web/issues</Support>
+  <Project>https://github.com/GrantM28/runelite-web</Project>
+  <Overview>RuneLite (Old School RuneScape) in your web browser. Log in with a Jagex Account through the bundled Bolt launcher.</Overview>
+  <Category>GameServers: Tools:</Category>
+  <WebUI>https://[IP]:[PORT:3001]/</WebUI>
+  <Icon>https://raw.githubusercontent.com/runelite/runelite/master/runelite-client/src/main/resources/net/runelite/client/ui/runelite_128.png</Icon>
+  <ExtraParams>--security-opt seccomp=unconfined --shm-size=1g</ExtraParams>
+  <Config Name="WebUI (HTTPS)" Target="3001" Default="3001" Mode="tcp" Description="Browser access (self-signed HTTPS)" Type="Port" Display="always" Required="true" Mask="false">3001</Config>
+  <Config Name="Config" Target="/config" Default="/mnt/user/appdata/runelite-web" Mode="rw" Description="Logins, Bolt and RuneLite settings, plugins" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/runelite-web</Config>
+  <Config Name="Web username" Target="CUSTOM_USER" Default="runelite" Description="Username for the web page (basic auth)" Type="Variable" Display="always" Required="false" Mask="false">runelite</Config>
+  <Config Name="Web password" Target="PASSWORD" Default="" Description="Password for the web page. Set one; leaving it blank means anyone on your network can play your account." Type="Variable" Display="always" Required="false" Mask="true"></Config>
+  <Config Name="Launch mode" Target="LAUNCH_MODE" Default="bolt|runelite" Description="bolt = Jagex Account login via Bolt; runelite = start RuneLite directly" Type="Variable" Display="always" Required="false" Mask="false">bolt</Config>
+  <Config Name="PUID" Target="PUID" Default="99" Type="Variable" Display="advanced" Required="false" Mask="false">99</Config>
+  <Config Name="PGID" Target="PGID" Default="100" Type="Variable" Display="advanced" Required="false" Mask="false">100</Config>
+  <Config Name="TZ" Target="TZ" Default="Etc/UTC" Type="Variable" Display="advanced" Required="false" Mask="false">Etc/UTC</Config>
+  <Config Name="Bolt extra args" Target="BOLT_ARGS" Default="" Description="e.g. --no-sandbox if the Bolt window stays blank" Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+  <Config Name="RuneLite Java options" Target="RUNELITE_JAVA_OPTS" Default="" Description="Extra JVM flags for direct RuneLite launches" Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+</Container>

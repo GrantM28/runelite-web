@@ -1,0 +1,7 @@
+#!/bin/bash
+# Launch Bolt. Data lives under $HOME (/config) so logins and settings persist.
+export JAVA_HOME="${JAVA_HOME:-/opt/java}"
+export PATH="$JAVA_HOME/bin:$PATH"
+mkdir -p "$HOME/.local/share" "$HOME/.config" "$HOME/logs"
+# BOLT_ARGS lets you pass extra flags, e.g. --no-sandbox if the window stays blank.
+exec bolt ${BOLT_ARGS} >>"$HOME/logs/bolt.log" 2>&1
