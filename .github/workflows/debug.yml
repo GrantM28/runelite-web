@@ -8,8 +8,6 @@ jobs:
         run: |
           docker run -d --name rl --security-opt seccomp=unconfined --shm-size=1g ghcr.io/grantm28/runelite-web:latest
           sleep 45
-          docker exec rl bash -c 'sed -n 1,40p /etc/s6-overlay/s6-rc.d/init-selkies-config/run; echo ====; cat /etc/s6-overlay/s6-rc.d/svc-watchdog/run; echo ====; cat /defaults/startwm.sh; echo ====; ls -la /config/.config/openbox; cat /config/.config/openbox/autostart; echo ====; cat /usr/lib/x86_64-linux-gnu/openbox-autostart | tail -20; ls -la /config /config/logs'
-          echo "==== manual bolt run ===="
-          docker exec -u abc -e HOME=/config -e DISPLAY=:1 rl bash -c 'timeout 25 /opt/bolt/bolt-launcher/bolt 2>&1 | tail -60; echo "exit=$?"'
-          echo "==== manual bolt run --no-sandbox ===="
-          docker exec -u abc -e HOME=/config -e DISPLAY=:1 rl bash -c 'timeout 25 /opt/bolt/bolt-launcher/bolt --no-sandbox 2>&1 | tail -40; echo "exit=$?"'
+          docker exec rl bash -c 'ps aux | grep -i "bolt\|runelite\|java" | grep -v grep; echo "== bolt.log =="; cat /config/logs/bolt.log; echo "== openbox env =="; p=$(pgrep -x openbox); tr "\0" "\n" < /proc/$p/environ | sort'
+          echo "==== replay autostart with openbox env ===="
+          docker exec rl bash -c 'p=$(pgrep -x openbox); mapfile -d "" E < /proc/$p/environ; s6-setuidgid abc env -i "${E[@]}" bash -xc "timeout 20 sh /config/.config/openbox/autostart; echo autostart_exit=\$?"; echo "== bolt.log after =="; tail -30 /config/logs/bolt.log'
