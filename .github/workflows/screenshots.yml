@@ -31,7 +31,7 @@ jobs:
           cp shots/bolt.png shots/runelite.png docs/images/
           docker cp rl:/usr/share/runelite-web/icon.png assets/icon.png
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: screenshots
