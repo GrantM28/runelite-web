@@ -83,6 +83,8 @@ jobs:
           docker cp rl:/tmp/shot.png shot.png
           # Bolt window is up
           docker exec -u abc -e DISPLAY=:1 rl xwininfo -root -tree | grep -q '"Bolt Launcher"'
+          # Right-click menu installed
+          docker exec rl grep -q bolt-restart /config/.config/openbox/menu.xml
           # Version banner printed by our init service
           docker logs rl 2>&1 | grep -q "Bolt launcher"
           # Web server answers and enforces the password

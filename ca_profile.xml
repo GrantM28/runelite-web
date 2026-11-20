@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CommunityApplications>
+  <Profile>runelite-web runs RuneLite, the open-source Old School RuneScape client, in a container and streams it to any web browser. Log in with your Jagex Account through the bundled open-source Bolt launcher, keep your RuneLite plugins and settings in appdata, and play from a laptop, tablet or work PC with nothing installed. It's tuned for servers without a GPU. Guides for setup, remote access (Tailscale, Cloudflare Tunnel, reverse proxies), performance and troubleshooting are on the project page. For help, please open a GitHub issue. Not affiliated with Jagex or RuneLite.</Profile>
+  <Icon>https://raw.githubusercontent.com/GrantM28/runelite-web/main/assets/icon.png</Icon>
+  <WebPage>https://github.com/GrantM28/runelite-web</WebPage>
+</CommunityApplications>

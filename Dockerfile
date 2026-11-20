@@ -83,6 +83,8 @@ COPY assets/icon.svg /usr/share/runelite-web/icon.svg
 
 RUN set -eux; \
     chmod +x /usr/local/bin/* /etc/s6-overlay/s6-rc.d/init-runelite-config/run; \
+    # Stored as menu.openbox in the repo so the Unraid CA scanner doesn't treat it as a template
+    mv /defaults/menu.openbox /defaults/menu.xml; \
     # Browser tab / PWA icon
     rsvg-convert -w 256 -h 256 /usr/share/runelite-web/icon.svg -o /usr/share/runelite-web/icon.png; \
     mkdir -p /usr/share/selkies/www; \
